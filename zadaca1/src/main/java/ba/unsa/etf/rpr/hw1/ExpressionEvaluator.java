@@ -13,22 +13,20 @@ public class ExpressionEvaluator {
      */
     public static Double evaluate(String expression) {
         String[] theSymbols=expression.split(" ");
-        String c;
         Stack<Double> values=new Stack<>();
         Stack<String> operators=new Stack<>();
         Boolean wasNumber= Boolean.FALSE;
         for (String theSymbol : theSymbols) {
-            c = theSymbol;
-            if (c.equals("(")) continue;
-            else if ((c.equals("+") || c.equals("-") || c.equals("*") || c.equals("/")) && wasNumber) {
-                operators.push(c);
+            if (theSymbol.equals("(")) continue;
+            else if ((theSymbol.equals("+") || theSymbol.equals("-") || theSymbol.equals("*") || theSymbol.equals("/")) && wasNumber) {
+                operators.push(theSymbol);
                 wasNumber = false;
-            } else if (c.equals("sqrt") && !wasNumber) {
-                operators.push(c);
-            } else if (Character.isDigit(c.charAt(0))) {
-                values.push(Double.parseDouble(c));
+            } else if (theSymbol.equals("sqrt") && !wasNumber) {
+                operators.push(theSymbol);
+            } else if (!wasNumber && Character.isDigit(theSymbol.charAt(0))) {
+                values.push(Double.parseDouble(theSymbol));
                 wasNumber = true;
-            } else if (c.equals(")") && wasNumber) {
+            } else if (theSymbol.equals(")") && wasNumber) {
                 operiraj(values, operators);
             } else throw new RuntimeException();
         }
@@ -42,10 +40,16 @@ public class ExpressionEvaluator {
         String operator=operators.pop();
         double v=values.pop();
         switch (operator) {
-            case "+" -> v+=values.pop();
-            case "-" -> v-=values.pop();
+            case "+" -> {
+                if (operators.empty() || !operators.peek().equals("-")) v += values.pop();
+                else v=values.pop() - v;
+            }
+            case "-" -> {
+                if (operators.empty() || !operators.peek().equals("-")) v = values.pop() - v;
+                else v += values.pop();
+            }
             case "*" -> v*=values.pop();
-            case "/" -> v/=values.pop();
+            case "/" -> v=values.pop()/v;
             case "sqrt" -> v=sqrt(v);
         }
         values.push(v);
