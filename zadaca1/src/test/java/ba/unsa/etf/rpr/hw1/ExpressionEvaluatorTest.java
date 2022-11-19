@@ -12,7 +12,7 @@ public class ExpressionEvaluatorTest {
 
     @Test
     void evaluateTest2(){
-        String s = "( 7 + 1 / 1 / 3 )";
+        String s = "( 7 + ( 1 / ( 1 / 3 ) ) )";
         assertEquals(10D, ExpressionEvaluator.evaluate(s));
     }
 
@@ -32,6 +32,7 @@ public class ExpressionEvaluatorTest {
     void evaluateTest5(){
         /*test for subtraction ,i.e. 4 - 3 + 1 != 4 - 4 = 0
         * had to use round because the difference is 10^-10 */
+        /*Technically might not be legal but easier than writing a parenthesis around every addition and subtraction*/
         String s = "( 4 - ( 4 / 3 ) + ( 4 / 5 ) - ( 4 / 7 ) + ( 4 / 9 ) - ( 4 / 11 ) + ( 4 / 13 ) )";
         assertEquals(Math.round((4 - 4. / 3 + 4. / 5 - 4. / 7 + 4. / 9 - 4. / 11 + 4. / 13)*100), Math.round(ExpressionEvaluator.evaluate(s)*100));
     }

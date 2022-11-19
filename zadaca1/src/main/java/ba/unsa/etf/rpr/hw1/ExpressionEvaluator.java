@@ -16,6 +16,7 @@ public class ExpressionEvaluator {
         Stack<Double> values=new Stack<>();
         Stack<String> operators=new Stack<>();
         Boolean wasNumber= Boolean.FALSE;
+        Validation(theSymbols);
         for (String theSymbol : theSymbols) {
             if (theSymbol.equals("(")) continue;
             else if ((theSymbol.equals("+") || theSymbol.equals("-") || theSymbol.equals("*") || theSymbol.equals("/")) && wasNumber) {
@@ -34,6 +35,20 @@ public class ExpressionEvaluator {
             operiraj(values, operators);
         }
         return values.pop();
+    }
+
+    /*Validation tests are the parenthesis in the correct places*/
+    private static void Validation(String[] izraz) {
+        int operators=0,numbers=0;
+        for (String theSymbol: izraz) {
+            if (numbers>2 && operators>1) throw new RuntimeException();
+            if (Character.isDigit(theSymbol.charAt(0))) numbers++;
+            else if (theSymbol.equals("+") || theSymbol.equals("-") || theSymbol.equals("*") || theSymbol.equals("/")) operators++;
+            else if (theSymbol.equals(")") || theSymbol.equals("(")) {
+                numbers=0;
+                operators=0;
+            }
+        }
     }
 
     private static void operiraj(Stack<Double> values, Stack<String> operators) {
